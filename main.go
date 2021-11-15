@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 var root = flag.String("root", ".", "file system path")
@@ -25,6 +26,20 @@ func main() {
 }
 
 func blackHandler(w http.ResponseWriter, r *http.Request) {
+	// 캐시 로직
+	key := "black"
+	e := `"` + key + `"`
+	w.Header().Set("Etag", e)
+	w.Header().Set("Cache-Control", "max-age=2592000") // 30 days
+
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		if strings.Contains(match, e) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
+	// 검은색 이미지 생성
 	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
 	black := color.RGBA{0, 0, 0, 255}
 	draw.Draw(m, m.Bounds(), &image.Uniform{black}, image.Point{}, draw.Src)
