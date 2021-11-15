@@ -1,0 +1,11 @@
+@PROTOCOL = http://
+@HOSTNAME = localhost
+@PORT = 8080
+@HOST = {{HOSTNAME}}:{{PORT}}
+@URL = {{PROTOCOL}}{{HOST}}
+
+### 프로젝트 파일 조회
+GET {{URL}}
+
+### 검은색 이미지 응답
+GET {{URL}}/black/
