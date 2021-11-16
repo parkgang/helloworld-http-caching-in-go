@@ -43,7 +43,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("unable to encode image.")
 	}
 
-	w.Header().Set("Cache-Control", "max-age=5")
+	w.Header().Set("Cache-Control", "private, max-age=5")
 	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
 	if _, err := w.Write(buffer.Bytes()); err != nil {
@@ -63,7 +63,7 @@ func textHandler(w http.ResponseWriter, r *http.Request) {
 
 	etag := fmt.Sprintf("%x", md5.Sum([]byte(modifiedtime.String())))
 	w.Header().Set("Etag", etag)
-	w.Header().Set("Cache-Control", "max-age=5")
+	w.Header().Set("Cache-Control", "private, max-age=5")
 
 	// etag가 변하지 않았다면 304 응답
 	if match := r.Header.Get("If-None-Match"); match != "" {
