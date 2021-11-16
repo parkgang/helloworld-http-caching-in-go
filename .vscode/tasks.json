@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "live reloading gin server",
+      "type": "shell",
+      "command": "gin",
+      "args": ["--port", "5100", "--immediate", "--notifications"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PATH": "${env:GOPATH}/bin:${env:PATH}"
+        }
+      }
+    }
+  ]
+}
