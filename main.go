@@ -21,12 +21,33 @@ var root = flag.String("root", "./assets", "file system path")
 
 func main() {
 	http.Handle("/", http.FileServer(http.Dir(*root)))
-	http.HandleFunc("/text", textHandler)
 	http.HandleFunc("/image", imageHandler)
+	http.HandleFunc("/text", textHandler)
 
 	log.Println("Listening on 8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
+	}
+}
+
+func imageHandler(w http.ResponseWriter, r *http.Request) {
+	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
+	// 검은색 이미지 생성
+	tempImage := color.RGBA{0, 0, 0, 255}
+	draw.Draw(m, m.Bounds(), &image.Uniform{tempImage}, image.Point{}, draw.Src)
+
+	// jpeg 형식으로 이미지를 인코딩하고 ResponseWriter에 writes 합니다.
+	var img image.Image = m
+	buffer := new(bytes.Buffer)
+	if err := jpeg.Encode(buffer, img, nil); err != nil {
+		log.Println("unable to encode image.")
+	}
+
+	w.Header().Set("Cache-Control", "max-age=5")
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+	if _, err := w.Write(buffer.Bytes()); err != nil {
+		log.Println("unable to write image.")
 	}
 }
 
@@ -60,25 +81,4 @@ func textHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("파일 응답")
 	fmt.Fprint(w, string(dat))
-}
-
-func imageHandler(w http.ResponseWriter, r *http.Request) {
-	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
-	// 검은색 이미지 생성
-	tempImage := color.RGBA{0, 0, 0, 255}
-	draw.Draw(m, m.Bounds(), &image.Uniform{tempImage}, image.Point{}, draw.Src)
-
-	// jpeg 형식으로 이미지를 인코딩하고 ResponseWriter에 writes 합니다.
-	var img image.Image = m
-	buffer := new(bytes.Buffer)
-	if err := jpeg.Encode(buffer, img, nil); err != nil {
-		log.Println("unable to encode image.")
-	}
-
-	w.Header().Set("Cache-Control", "max-age=5")
-	w.Header().Set("Content-Type", "image/jpeg")
-	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
-	if _, err := w.Write(buffer.Bytes()); err != nil {
-		log.Println("unable to write image.")
-	}
 }

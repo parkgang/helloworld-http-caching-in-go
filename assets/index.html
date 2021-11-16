@@ -16,31 +16,31 @@
   </head>
   <body>
     <div>
-      <button onclick="handleGetTxt()">텍스트 요청</button><br />
-      <span class="text-area"></span>
-    </div>
-    <hr />
-    <div>
       <button onclick="handleGetImage()">이미지 요청</button><br />
       <img id="image" src="" alt="이미지가 표시 안됨" />
     </div>
+    <hr />
+    <div>
+      <button onclick="handleGetTxt()">텍스트 요청</button><br />
+      <span class="text-area"></span>
+    </div>
   </body>
   <script>
-    async function handleGetTxt() {
-      const response = await fetch(`${window.location.origin}/text`);
-      if (response.ok) {
-        const text = await response.text();
-        document.getElementsByClassName("text-area")[0].innerHTML = text;
-      } else {
-        alert("HTTP-Error: " + response.status);
-      }
-    }
     async function handleGetImage() {
       const response = await fetch(`${window.location.origin}/image`);
       if (response.ok) {
         const imageBlob = await response.blob();
         const imageObjectURL = URL.createObjectURL(imageBlob);
         document.getElementById("image").src = imageObjectURL;
+      } else {
+        alert("HTTP-Error: " + response.status);
+      }
+    }
+    async function handleGetTxt() {
+      const response = await fetch(`${window.location.origin}/text`);
+      if (response.ok) {
+        const text = await response.text();
+        document.getElementsByClassName("text-area")[0].innerHTML = text;
       } else {
         alert("HTTP-Error: " + response.status);
       }
