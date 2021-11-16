@@ -7,8 +7,8 @@
     <style>
       .text-area {
         display: inline-block;
-        width: 200px;
-        height: 100px;
+        width: 240px;
+        height: 240px;
         border: 1px solid black;
         overflow: hidden;
       }
@@ -22,7 +22,7 @@
     <hr />
     <div>
       <button onclick="handleGetImage()">이미지 요청</button><br />
-      <img src="" alt="이미지가 표시 안됨" />
+      <img id="image" src="" alt="이미지가 표시 안됨" />
     </div>
   </body>
   <script>
@@ -36,8 +36,14 @@
       }
     }
     async function handleGetImage() {
-      console.log(`요청`);
-      await fetch(`${window.location.origin}/black`);
+      const response = await fetch(`${window.location.origin}/image`);
+      if (response.ok) {
+        const imageBlob = await response.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        document.getElementById("image").src = imageObjectURL;
+      } else {
+        alert("HTTP-Error: " + response.status);
+      }
     }
   </script>
 </html>
