@@ -1,3 +1,6 @@
 # debug file
 __debug_bin
 gin-bin
+
+# 기타
+.DS_Store
