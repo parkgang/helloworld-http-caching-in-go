@@ -17,7 +17,7 @@ import (
 var root = flag.String("root", ".", "file system path")
 
 func main() {
-	http.HandleFunc("/black/", blackHandler)
+	http.HandleFunc("/black", blackHandler)
 	http.Handle("/", http.FileServer(http.Dir(*root)))
 	log.Println("Listening on 8080")
 	err := http.ListenAndServe(":8080", nil)

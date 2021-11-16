@@ -8,4 +8,4 @@
 GET {{URL}}
 
 ### 검은색 이미지 응답
-GET {{URL}}/black/
+GET {{URL}}/black
