@@ -39,25 +39,26 @@ func textHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	modifiedtime := file.ModTime()
-	fmt.Println("Last modified time: ", modifiedtime)
 
 	etag := fmt.Sprintf("%x", md5.Sum([]byte(modifiedtime.String())))
 	w.Header().Set("Etag", etag)
-	w.Header().Set("Cache-Control", "max-age=10")
+	w.Header().Set("Cache-Control", "max-age=5")
 
 	// etag가 변하지 않았다면 304 응답
 	if match := r.Header.Get("If-None-Match"); match != "" {
 		if strings.Contains(match, etag) {
+			fmt.Println("etag가 변하지 않았음으로 304 응답")
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
 	}
 
-	// 수정된 파일을 읽은 후 응답
+	// 파일을 읽은 후 응답
 	dat, err := ioutil.ReadFile(filename)
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("파일 응답")
 	fmt.Fprint(w, string(dat))
 }
 
