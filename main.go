@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -39,6 +40,7 @@ func blackHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	fmt.Println("캐시되지 않아서 요청이 꽂이고 있습니다.")
 	// 검은색 이미지 생성
 	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
 	black := color.RGBA{0, 0, 0, 255}
