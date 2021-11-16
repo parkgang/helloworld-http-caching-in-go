@@ -1,3 +1,3 @@
-module parkgang/helloworld-http-caching-in-go
+module github.com/parkgang/http-cache-server-with-go
 
 go 1.16
