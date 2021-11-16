@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/md5"
 	"flag"
 	"fmt"
 	"image"
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -29,12 +31,33 @@ func main() {
 }
 
 func textHandler(w http.ResponseWriter, r *http.Request) {
-	// 파일 읽기
-	dat, err := ioutil.ReadFile("./assets/note.txt")
+	filename := "./assets/note.txt"
+
+	// 마지막 수정 시간 가져오기
+	file, err := os.Stat(filename)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	// 응답
+	modifiedtime := file.ModTime()
+	fmt.Println("Last modified time: ", modifiedtime)
+
+	etag := fmt.Sprintf("%x", md5.Sum([]byte(modifiedtime.String())))
+	w.Header().Set("Etag", etag)
+	w.Header().Set("Cache-Control", "max-age=10")
+
+	// etag가 변하지 않았다면 304 응답
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		if strings.Contains(match, etag) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
+	// 수정된 파일을 읽은 후 응답
+	dat, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Fprint(w, string(dat))
 }
 
