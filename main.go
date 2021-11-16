@@ -43,6 +43,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("unable to encode image.")
 	}
 
+	log.Println("이미지 응답")
 	w.Header().Set("Cache-Control", "private, max-age=5")
 	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
