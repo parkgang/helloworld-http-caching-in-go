@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .text-area {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <button onclick="handleGetTxt()">텍스트 요청</button><br />
+      <span class="text-area"></span>
+    </div>
+    <hr />
+    <div>
+      <button onclick="handleGetImage()">이미지 요청</button><br />
+      <img src="" alt="이미지가 표시 안됨" />
+    </div>
+  </body>
+  <script>
+    async function handleGetTxt() {
+      const response = await fetch(`${window.location.origin}/text`);
+      if (response.ok) {
+        const text = await response.text();
+        document.getElementsByClassName("text-area")[0].innerHTML = text;
+      } else {
+        alert("HTTP-Error: " + response.status);
+      }
+    }
+    async function handleGetImage() {
+      console.log(`요청`);
+      await fetch(`${window.location.origin}/black`);
+    }
+  </script>
+</html>

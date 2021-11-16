@@ -8,22 +8,34 @@ import (
 	"image/color"
 	"image/draw"
 	"image/jpeg"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-var root = flag.String("root", ".", "file system path")
+var root = flag.String("root", "./assets", "file system path")
 
 func main() {
-	http.HandleFunc("/black", blackHandler)
 	http.Handle("/", http.FileServer(http.Dir(*root)))
+	http.HandleFunc("/text", textHandler)
+	http.HandleFunc("/black", blackHandler)
+
 	log.Println("Listening on 8080")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func textHandler(w http.ResponseWriter, r *http.Request) {
+	// 파일 읽기
+	dat, err := ioutil.ReadFile("./assets/note.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 응답
+	fmt.Fprint(w, string(dat))
 }
 
 func blackHandler(w http.ResponseWriter, r *http.Request) {
